@@ -1,10 +1,8 @@
 ﻿// Урок2. Домашнее задание 4
 // Присвоить переменной а значение в промежутке [0..15]. С помощью оператора switch организовать вывод чисел от a до 15.
-var a=11;
+var a=0;
 switch(a) {
 	case 0:
-		print_Numbers_from_A_to_15(a);
-		break;
 	case 1:
 		print_Numbers_from_A_to_15(a);
 		break;
