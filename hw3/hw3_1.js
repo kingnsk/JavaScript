@@ -8,9 +8,9 @@ var current_count = start_count;
 if(start_count < 2) start_count = 2;
 
 while (end_count >= start_count) {
-
       var current_count = 2;
       var simple = true;
+
       while (current_count <= end_count/2) 
         { 
           if (end_count % current_count == 0)
