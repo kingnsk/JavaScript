@@ -22,28 +22,8 @@ function countBasketPrice(items) {
 	var summ = 0;
 	var index = 0;
 	for(let product of items) {
-		switch (product[0]) {
-			case "Sprite":
-				index = price.findIndex(item=>item[0]=="Sprite")
-				summ += price[index][1] * product[1];
-				break;
-
-			case "Fanta":
-				index = price.findIndex(item=>item[0]=="Fanta")
-				summ += price[index][1] * product[1];
-				break;
-
-			case "Juice":
-				index = price.findIndex(item=>item[0]=="Juice")
-				summ += price[index][1] * product[1];
-				break;
-
-			case "Water":
-				index = price.findIndex(item=>item[0]=="Water")
-				summ += price[index][1] * product[1];
-				break;
-		}
-
+		index = price.findIndex(item=>item[0]==product[0])
+		summ += price[index][1] * product[1];		
 	}
-
+	return(summ);	
 }
