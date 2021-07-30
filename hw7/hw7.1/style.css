@@ -1,0 +1,24 @@
+    .hide, .hide + label ~ div {
+        display: none; 
+    }
+
+
+    .hide + label,
+    .hide:checked + label {
+        padding: 0;
+        cursor: pointer;
+        border-bottom: 1px dotted blue;
+    }
+
+    .hide:checked + label {
+        border-bottom: 0;
+    }
+
+    .hide:checked + label + div {
+        display: block; 
+        background: #ededed;
+        -moz-box-shadow: inset 3px 3px 10px #ededed;
+        -webkit-box-shadow: inset 3px 3px 10px #7d8e8f;
+        box-shadow: inset 3px 3px 10px #ededed;
+        padding: 20px; 
+    }
