@@ -14,7 +14,8 @@ const config = {
     /**
      * Размер поля.
      */
-    size: 20
+    size: 20,
+    gameTick: 1000
 };
 
 /**
@@ -37,6 +38,7 @@ const game = {
     start() {
         this.setGameStatus(GAME_STATUS_STARTED);
 
+	timer = setInterval( () => this.move(), config.gameTick);
         board.render();
         snake.render();
         food.render();
@@ -46,7 +48,17 @@ const game = {
      * Функция выполняет паузу игры.
      */
     pause() {
-        this.setGameStatus(GAME_STATUS_PAUSED);
+        
+        var currentStatus = this.getGameStatus();
+	if( currentStatus == "started") {
+		this.setGameStatus(GAME_STATUS_PAUSED);
+		clearInterval(timer);
+	}
+	else {
+		timer = setInterval( () => this.move(), config.gameTick);
+		this.setGameStatus(GAME_STATUS_STARTED);
+	}
+	
 
         /* добавить сюда код */
     },
@@ -56,6 +68,8 @@ const game = {
      */
     stop() {
         this.setGameStatus(GAME_STATUS_STOPPED);
+	clearInterval(timer);
+        this.gameIsOver();
 
         /* добавить сюда код */
     },
@@ -65,7 +79,7 @@ const game = {
      *
      * @param event {KeyboardEvent} Событие нажатия на клавишу.
      */
-    move(event) {
+    changeDirection(event) {
         let direction = null;
 
         /* смотрим на код клавишы и
@@ -90,7 +104,18 @@ const game = {
         /* устанавливаем позицию для змейки
          * и запрашиваем координаты следующей позиции */
         snake.setDirection(direction);
+	},
+
+        move() {
         const nextPosition = snake.getNextPosition();
+	if (snake.foundPosition(nextPosition) != -1) {
+            this.gameIsOver();
+        }
+
+	if (snake.foundPosition(nextPosition) != -1) {
+            this.gameIsOver();
+        }
+
 	const score = document.getElementById("score-value");
 
         /* проверяем совпадает ли следующая позиция с какой-нибудь едой */
@@ -103,6 +128,12 @@ const game = {
             snake.setPosition(nextPosition, false);
 
 	    score.textContent++;
+	    config.gameTick -=10;
+	    if (config.gameTick < 0) {
+		config.gameTick = 0;
+	    }    	
+   	    clearInterval(timer);
+            timer = setInterval( () => this.move(), config.gameTick);
             /* удаляем еду с поля */
             food.removeItem(foundFood);
 
@@ -132,6 +163,15 @@ const game = {
         // обратить внимание, как сделать красивее
         element.classList.remove(GAME_STATUS_STARTED, GAME_STATUS_PAUSED, GAME_STATUS_STOPPED);
         element.classList.add(status);
+    },
+    getGameStatus() {
+        const element = game.getElement();
+        return element.classList[1];
+    },
+    gameIsOver() {
+	const score = document.getElementById("score-value");
+        alert("Игра окончена. Ваш результат: " + score.innerText);
+        window.location.reload();
     }
 };
 
@@ -322,6 +362,16 @@ const snake = {
         this.parts.push(position);
     },
 
+    foundPosition(snakePosition) {
+        /* здесь происходит вызов функции comparerFunction для каждого элемента в массиве,
+         * если функция вернет true, то для этого элемента будет возвращен его индекс,
+         * если функция ни разу не вернет true, то результатом будет -1 */
+        return this.parts.findIndex((item) =>
+            item.top === snakePosition.top && item.left === snakePosition.left
+        );
+    },
+
+
     /**
      * Функция отрисовывает змейку на поле.
      */
@@ -408,7 +458,7 @@ function init() {
 
     /* добавляем обработчик при нажатии на любую кнопку на клавиатуре,
      * далее в методе мы будем проверять нужную нам клавишу */
-    window.addEventListener('keydown', game.move);
+    window.addEventListener('keydown', game.changeDirection);
 }
 
 /**
